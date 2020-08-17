@@ -3,8 +3,11 @@ title: "Tarea 1"
 author: "Sergio Cubero Soto"
 date: "17/8/2020"
 output:
-  html_document:
-    df_print: paged
+  html_document: 
+    df_print: kable
+    toc: yes
+    highlight: monochrome
+    theme: paper
 editor_options: 
   chunk_output_type: console
 ---
@@ -47,7 +50,11 @@ library(plotly)
 naci <- read_excel("Datos/nacimiento1990_1995.xls", 
     col_names = c("Fecha","Nacimientos"))
 
-ts<-ts(naci$Nacimientos,start = min(naci$Fecha),end = max(naci$Fecha))
+nacits<-ts(naci$Nacimientos,frequency = 12,start=c(1990,1))
+
+
+frequency(nacits) #la frecuencia de la serie
+cycle(nacits) #verificar el ciclo de cada observación
 
 ```
 
@@ -55,9 +62,91 @@ ts<-ts(naci$Nacimientos,start = min(naci$Fecha),end = max(naci$Fecha))
 **b.** Elabore un gráﬁco de la serie.
 
 ```{r}
-autoplot(naci)
+p<-autoplot(nacits) + 
+  labs(x ="t", y = "Nacimientos", title=" Evolución de los nacimientos (ene-90 a dic-1995)")+
+  theme_classic()
+
+ggplotly(p)
+
+decomposeNacitsMult <- decompose(nacits,"multiplicative")
+decomposeNacitsAditi <- decompose(nacits,"additive")
+
+p1<-autoplot(decomposeNacitsMult)+
+  theme_bw()+
+  ggtitle("Descomposición Multiplicativa")
+
+ggplotly(p1)
+
+p2<-autoplot(decomposeNacitsAditi)+
+  theme_bw()+
+  ggtitle("Descomposición Aditiva")
+
+ggplotly(p2)
+
+boxplot(nacits~cycle(nacits),xlab="mes", ylab = "nacimientos")
+
+p3<-ggseasonplot(nacits, year.labels=FALSE, continuous=TRUE)+
+  theme_bw()
+ggplotly(p3)
+
+ggseasonplot(nacits, year.labels=FALSE, continuous=TRUE, polar = TRUE)+
+  theme_bw()
+
+
 ```
 
 
 **c.** Comente sobre las características de la serie.
+
+
+
+
+**9. Utilice la serie fpp2::goog de la bolsa de valores del Google entre 25 de febrero, 2013 a 13 de febrero, 2017.**
+
+a. Haga un gráﬁco lineal de la serie y comente las características de esta serie.
+
+```{r}
+accgoogle<-fpp2::goog
+str(accgoogle)
+head(accgoogle)
+
+pgoogle<-autoplot(accgoogle)+
+  theme_bw()
+
+ggplotly(pgoogle)
+```
+
+
+b. Una serie diferenciada Zt de la serie Yt es deﬁnida como
+
+Zt = Yt −Yt−1.
+
+Zt mide el cambio que produce la observación en el tiempo t con respecto a la observación en el tiempo t − 1. Utilice la función diff(goog) para obtener los cambios diarios de la serie.
+
+```{r}
+zt<-diff(accgoogle)
+
+```
+
+
+c. Haga un gráﬁco lineal de la serie obtenida en b. ¿La serie parece a un ruido blanco?
+
+```{r}
+pzt<-autoplot(zt)+
+  theme_bw()
+
+ggplotly(pzt)
+```
+
+
+d. Utilice la función ggAcf() para calcular la función de autocorrelación y compárela con la función de autocorrelación de los ruidos blancos.
+
+
+```{r}
+
+pzt2<- ggAcf(zt)+
+  theme_bw()
+
+ggplotly(pzt2)
+```
 
