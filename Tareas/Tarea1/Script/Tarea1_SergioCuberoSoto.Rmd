@@ -1,0 +1,63 @@
+---
+title: "Tarea 1"
+author: "Sergio Cubero Soto"
+date: "17/8/2020"
+output:
+  html_document:
+    df_print: paged
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd("/cloud/project/Tareas/Tarea1")
+```
+
+
+```{r paquetes, include=FALSE}
+library(ggfortify)
+library(forecast)
+library(fpp2)
+library(data.table)
+library(TTR)
+library(xts)
+library(readxl)
+library(plotly)
+```
+
+**1. Clasiﬁque las siguientes series (discreta o continua, univariada o multivariada)**
+
+*a.* Índice diario de bolsa de valores durante el período de enero 1990 a diciembre 2010. **R/ Continua Univariada**
+
+*b.* Registro de la marea en un lugar especíﬁco durante 30 días. **R/ Continua Univariada**
+
+*c.* Presión sanguínea de una mujer durante el embarazo. **R/ Continua Univariada**
+
+*d.* Temperatura promedio diario durante el año 2019.**R/ Discreta Univariada**
+
+*e*. Registro diario de nacimiento y defunciones durante el año 2010. **R/ Discreta Univariada**
+
+**3. En la base de datos “nacimiento1990_1995.xls” se tienen las cifras de los nacimientos mensuales inscritos en Costa Rica de enero de 1990 a diciembre de 1995.**
+
+**a.** Importe los datos a R.
+
+```{r}
+
+naci <- read_excel("Datos/nacimiento1990_1995.xls", 
+    col_names = c("Fecha","Nacimientos"))
+
+ts<-ts(naci$Nacimientos,start = min(naci$Fecha),end = max(naci$Fecha))
+
+```
+
+
+**b.** Elabore un gráﬁco de la serie.
+
+```{r}
+autoplot(naci)
+```
+
+
+**c.** Comente sobre las características de la serie.
+
