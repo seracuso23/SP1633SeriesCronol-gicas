@@ -39,7 +39,7 @@ library(plotly)
 
 *d.* Temperatura promedio diario durante el año 2019.**R/ Discreta Univariada**
 
-*e*. Registro diario de nacimiento y defunciones durante el año 2010. **R/ Discreta Univariada**
+*e*. Registro diario de nacimiento y defunciones durante el año 2010. **R/ Discreta Multivariada**
 
 **3. En la base de datos “nacimiento1990_1995.xls” se tienen las cifras de los nacimientos mensuales inscritos en Costa Rica de enero de 1990 a diciembre de 1995.**
 
@@ -68,6 +68,9 @@ p<-autoplot(nacits) +
 
 ggplotly(p)
 
+ggsubseriesplot(nacits)+
+  theme_bw()
+
 decomposeNacitsMult <- decompose(nacits,"multiplicative")
 decomposeNacitsAditi <- decompose(nacits,"additive")
 
@@ -92,7 +95,8 @@ ggplotly(p3)
 ggseasonplot(nacits, year.labels=FALSE, continuous=TRUE, polar = TRUE)+
   theme_bw()
 
-
+ggsubseriesplot(nacits)+
+  theme_bw()
 ```
 
 

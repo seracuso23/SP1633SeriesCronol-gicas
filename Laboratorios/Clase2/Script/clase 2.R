@@ -49,6 +49,8 @@ ggseasonplot(AP.ts, year.labels=FALSE, continuous=TRUE)
 
 ggseasonplot(AP.ts, year.labels=FALSE, continuous=TRUE, polar = TRUE)
 
+ggsubseriesplot(AP.ts)
+
 #¿qué notamos en estos gráficos?
 
 
@@ -62,6 +64,7 @@ head(cemento)
 autoplot(cemento)
 
 ggseasonplot(cemento, year.labels=FALSE, continuous=TRUE)
+ggseasonplot(cemento, year.labels=FALSE, continuous=TRUE,polar=T)
 
 ggsubseriesplot(cemento)
 
@@ -77,6 +80,8 @@ autoplot(medicamento)
 
 ggseasonplot(medicamento, year.labels=FALSE, continuous=TRUE)
 
+# Hay una tendecia creciente porque los mas oscuros estan abajo y los mas claros arribas
+# Adicional hay estacionalidad, pues se observa un comportamiento similar todos los meses
 ggseasonplot(medicamento, year.labels=FALSE, continuous=TRUE, polar = TRUE)
 
 ggsubseriesplot(medicamento)
@@ -91,6 +96,9 @@ cerveza<-fpp2::ausbeer
 autoplot(cerveza)
 
 ggseasonplot(cerveza, year.labels=FALSE, continuous=TRUE)
+# En el gráfico se observa que si tene comportamiento estacional donde el q1 y
+# q4 son altos mientras q2 y q3 son menores todos los años
+
 
 ggsubseriesplot(cerveza)
 
@@ -101,10 +109,22 @@ acf(ausbeer, plot = FALSE)
 
 #lagplot
 ?gglagplot  #
+# El plot analiza los datos y agarra la serie con un rezago y hace el gràfico para cada rezago
 gglagplot(cerveza,lags=16)
+
 gglagplot(cerveza,lags=16,do.lines=FALSE)
 
 h=1
+
+gglagplot(cerveza,lags=h,do.lines=FALSE)
+
+cerveza.shift<-shift(cerveza,n=h,type="lag")
+cycle(cerveza)
+
+plot(cerveza~cerveza.shift,xlim=c(200,600),ylim=c(200,600),
+     xy.labels=FALSE,col=cycle(cerveza),pch=20)
+
+h=2
 
 gglagplot(cerveza,lags=h,do.lines=FALSE)
 
@@ -123,7 +143,7 @@ autoplot(USAccDeaths)
 ggseasonplot(USAccDeaths, year.labels=FALSE, continuous=TRUE)
 gglagplot(USAccDeaths,lags=16)
 
-
+gglagplot(USAccDeaths,lags=36,do.lines = F)
 # 7. Series multivariadas -----------------------------------------------------------
 
 ?fpp2::arrivals
@@ -158,14 +178,15 @@ v = filter(w, sides=2, filter=rep(1/3,3)) # moving average
 par(mfrow=c(2,1))
 plot.ts(w, main="white noise")
 plot.ts(v, ylim=c(-3,3), main="moving average")
-
+dev.off()
 #las funciones de autocorrelación
 acf(w)
 acf(na.omit(v))
 
 # 9. Señal+ruido ----------------------------------------------------------
 
-cs = 2*cos(2*pi*1:500/50 + .6*pi); w = rnorm(500,0,1)
+cs = 2*cos(2*pi*1:500/50 + .6*pi)
+w = rnorm(500,0,1)
 par(mfrow=c(3,1), mar=c(3,2,2,1), cex.main=1.5)
 plot.ts(cs, main=expression(2*cos(2*pi*t/50+.6*pi)))
 plot.ts(cs+w, main=expression(2*cos(2*pi*t/50+.6*pi) + N(0,1)))
