@@ -5,11 +5,8 @@ date: "17/8/2020"
 output:
   html_document: 
     df_print: kable
-    toc: yes
-    highlight: monochrome
-    theme: paper
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ```{r setup, include=FALSE}
@@ -51,11 +48,6 @@ naci <- read_excel("Datos/nacimiento1990_1995.xls",
     col_names = c("Fecha","Nacimientos"))
 
 nacits<-ts(naci$Nacimientos,frequency = 12,start=c(1990,1))
-
-
-frequency(nacits) #la frecuencia de la serie
-cycle(nacits) #verificar el ciclo de cada observación
-
 ```
 
 
@@ -68,17 +60,7 @@ p<-autoplot(nacits) +
 
 ggplotly(p)
 
-ggsubseriesplot(nacits)+
-  theme_bw()
-
-decomposeNacitsMult <- decompose(nacits,"multiplicative")
 decomposeNacitsAditi <- decompose(nacits,"additive")
-
-p1<-autoplot(decomposeNacitsMult)+
-  theme_bw()+
-  ggtitle("Descomposición Multiplicativa")
-
-ggplotly(p1)
 
 p2<-autoplot(decomposeNacitsAditi)+
   theme_bw()+
@@ -86,23 +68,185 @@ p2<-autoplot(decomposeNacitsAditi)+
 
 ggplotly(p2)
 
-boxplot(nacits~cycle(nacits),xlab="mes", ylab = "nacimientos")
 
 p3<-ggseasonplot(nacits, year.labels=FALSE, continuous=TRUE)+
   theme_bw()
+
 ggplotly(p3)
 
-ggseasonplot(nacits, year.labels=FALSE, continuous=TRUE, polar = TRUE)+
+ggseasonplot(nacits, year.labels=FALSE, continuous=TRUE,polar = T)+
   theme_bw()
 
-ggsubseriesplot(nacits)+
-  theme_bw()
 ```
 
 
 **c.** Comente sobre las características de la serie.
 
 
+**4. Considere el proceso estocástico $Z_{t}=a_{t}$ con $t = ±1, ±2$, ... y**
+
+$$ a_{t}=\left\{\begin{matrix}
+1 & Prob=0.5\\ 
+-1 & Prob=0.5 
+\end{matrix}\right.$$
+
+a. Calcule la media del proceso $Z_{t}$.
+
+$$ E(Z_{t})=E(Z_{t})=1\cdot0.5+-1\cdot0.5=0 $$
+
+b. Calcule $\gamma \left ( t,s \right )=Cov\left ( a_{t},a_{s} \right )$ y haga su gráﬁco.
+
+**Caso cuando $s \neq t$**
+
+$$ Cov\left ( a_{t},a_{s} \right )= E[(a_{t}-\mu_{t}),(a_{s}-\mu_{s})]$$
+$$= E[a_{t}\cdot a_{s}] = E[a_{t}] \cdot E[a_{s}]=0$$
+**Caso cuando $s = t$**
+
+
+$$ Cov\left ( a_{t},a_{s} \right )= Var[a_{t}]=E[a_{t}^{2}]$$
+$$=1^2*0.5+(-1)^0.5=1$$
+**entonces**
+
+$$ \gamma \left ( t,s \right )=\left\{\begin{matrix}
+1 & s=t\\ 
+0 & s \neq t
+\end{matrix}\right.$$
+
+c. Calcule $\rho\left ( t,s \right )= Cov\left ( a_{t},a_{s} \right )$ y haga el gráﬁco.
+
+$$\rho\left ( t,s \right )= \frac{\gamma\left ( t,s \right )}{\sqrt{\gamma\left ( t,t \right ),\gamma\left ( s,s \right )}}$$
+**Caso cuando $s \neq t$**
+
+$$= \frac{0}{\sqrt{1 \cdot 1}}=0$$
+
+**Caso cuando $s = t$**
+
+$$\rho\left ( t,t \right )= \frac{\gamma\left ( t,t \right )}{\sqrt{\gamma\left ( t,t \right ) \cdot \gamma\left ( t,t \right )}}=$$
+$$\rho\left ( t,t \right )= \frac{1}{\sqrt{1 \cdot 1}}=1$$
+**entonces**
+
+$$ \rho \left ( t,s \right )=\left\{\begin{matrix}
+1 & s=t\\ 
+0 & s \neq t
+\end{matrix}\right.$$
+
+
+d. ¿Zt es débilmente estacionario?
+
+*Se concluye que $Z_{t}$ es debilmente estacionario ya que* **la media es constante** y $\rho \left ( t,s \right )$ **no depende de t**
+
+**6.Si $\left \{X_{t}, t \in T  \right \}$ y $\left \{Y_{t}, t \in  T \right \}$son estacionarios y además independientes, deﬁna $Z_{t} = a \cdot X_{t} + b \cdot Y_{t}$ para todo t. ¿$\left \{Z_{t}, t \in  T\right \}$$ será estacionario?**
+
+
+**7. Considere una secuencia aleatorias $\left \{\epsilon_{t}, t \geq 1 \right \}$ tal que $\epsilon_{t}$ es independiente e idénticamente distribuida  con media $\mu_{\epsilon}$ y variancia $\sigma_{\epsilon}^{2}$ . Deﬁna el paseo aleatorio $X_{t}$ como**
+
+$$X_{t}=\epsilon_{1}+\epsilon_{2}+...+\epsilon_{t}$$
+
+
+
+a. Muestre que $E(X_{t})=t \cdot \mu_{\epsilon}$ y $Var(X_{t}) = t \cdot\sigma_{\epsilon}^{2}$
+
+**Media de $X_{t}$**
+$$ E(X_{t})=E(\epsilon_{1}+\epsilon_{2}+...+\epsilon_{t})$$
+$$ = E(\epsilon_{1})+E(\epsilon_{2})+...+E(\epsilon_{t})$$
+
+$$ = \mu_{\epsilon}+\mu_{\epsilon}+...+\mu_{\epsilon}= t \cdot \mu_{\epsilon}$$
+
+
+**Varianza de $X_{t}$**
+
+$$ Var(X_{t})=Var(\epsilon_{1}+\epsilon_{2}+...+\epsilon_{t})$$
+$$ = Var(\epsilon_{1})+Var(\epsilon_{2})+...+Var(\epsilon_{t})$$
+$$ = \sigma_{\epsilon}^{2}+\sigma_{\epsilon}^{2}+...+\sigma_{\epsilon}^{2}= t \cdot \sigma_{\epsilon}^{2}$$
+
+
+b. Muestre que $\gamma_{x}(t,s)=\sigma_{\epsilon}^{2}\cdot min(t,s)$
+
+$$\gamma_{x}(t,s)=cov(x_{t},x_{s})$$
+Para el caso donde $s=t$:
+
+$$\gamma_{x}(t,t)=cov(x_{t},x_{t})=Var(x_{t},x_{t})=t \cdot \sigma_{\epsilon}^{2}$$
+**Para el caso donde $s=t+h$:**
+
+$$\gamma_{x}(t,t+h)=cov(x_{t},x_{t+h})$$
+
+$$Cov[(\epsilon_{1}+\epsilon_{2}+...+\epsilon_{t}),(\epsilon_{1}+\epsilon_{2}+...+\epsilon_{t}+\epsilon_{t+h})]=$$
+$$=Cov(\epsilon_{1},\epsilon_{1})+Cov(\epsilon_{1},\epsilon_{2})+...+Cov(\epsilon_{1},\epsilon_{t})+Cov(\epsilon_{1},\epsilon_{t+h})+ $$
+$$Cov(\epsilon_{2},\epsilon_{2})+Cov(\epsilon_{2},\epsilon_{2})+...+Cov(\epsilon_{2},\epsilon_{t})+Cov(\epsilon_{2},\epsilon_{t+h})+$$
+$$...+Cov(\epsilon_{t},\epsilon_{1})+Cov(\epsilon_{t},\epsilon_{2})+...+Cov(\epsilon_{t},\epsilon_{t})+Cov(\epsilon_{t},\epsilon_{t+h})
+$$
+
+Dado que $\epsilon_{t}$ es independiente las covarianzas donde los periodos son diferentes tienen $Cov(\epsilon_{i},\epsilon_{j})=0$ para $i \neq j$
+
+
+$$=Cov(\epsilon_{1},\epsilon_{1})+Cov(\epsilon_{2},\epsilon_{2})+...+Cov(\epsilon_{t},\epsilon_{t})
+$$
+
+$$=Var(\epsilon_{1},\epsilon_{1})+Var(\epsilon_{2},\epsilon_{2})+...+Var(\epsilon_{t},\epsilon_{t})=t \cdot \sigma_{\epsilon}^{2}
+$$
+**Caso donde s=t-h**
+
+$$\gamma_{x}(t,t-h)=cov(x_{t},x_{t-h})$$
+$$Cov[(\epsilon_{1}+\epsilon_{2}+...+\epsilon_{t-h}+\epsilon_{t}),(\epsilon_{1}+\epsilon_{2}+...+\epsilon_{t}+\epsilon_{t-h})]=$$
+$$=Cov(\epsilon_{1},\epsilon_{1})+Cov(\epsilon_{1},\epsilon_{2})+...+Cov(\epsilon_{1},\epsilon_{t})+Cov(\epsilon_{1},\epsilon_{t-h})+ $$
+
+
+$$Cov(\epsilon_{2},\epsilon_{2})+Cov(\epsilon_{2},\epsilon_{2})+...+Cov(\epsilon_{2},\epsilon_{t-h})+$$
+$$...+Cov(\epsilon_{t-h},\epsilon_{1})+Cov(\epsilon_{t-h},\epsilon_{2})+...+Cov(\epsilon_{t-h},\epsilon_{t-h})
+$$
+
+$$...+Cov(\epsilon_{t},\epsilon_{1})+Cov(\epsilon_{t},\epsilon_{2})+...+Cov(\epsilon_{t},\epsilon_{t-h})
+$$
+
+Dado que $\epsilon_{t}$ es independiente las covarianzas donde los periodos son diferentes tienen $Cov(\epsilon_{i},\epsilon_{j})=0$ para $i \neq j$
+
+
+$$=Cov(\epsilon_{1},\epsilon_{1})+Cov(\epsilon_{2},\epsilon_{2})+...+Cov(\epsilon_{t-h},\epsilon_{t-h})
+$$
+
+
+
+$$=Var(\epsilon_{1},\epsilon_{1})+Var(\epsilon_{2},\epsilon_{2})+...+Var(\epsilon_{t-h},\epsilon_{t-h})= (t-h) \cdot \sigma_{\epsilon}^{2}
+$$
+
+**entonces**
+
+$$ \gamma \left ( t,s \right )=\left\{\begin{matrix}
+t \cdot \sigma_{\epsilon}^{2} & s\geq t\\ 
+(t-h) \cdot \sigma_{\epsilon}^{2} & s < t
+\end{matrix}\right.$$
+
+$$\gamma \left ( t,s \right )=\sigma_{\epsilon}^{2}\cdot min(t,s)$$
+
+c. ¿Es $X_{t}$ estacionario?
+
+Se concluye que $X_{t}$ **NO es estacionario**  debido a que **la media no es constante** y **$\gamma \left ( t,s \right )$  depende de t**
+
+d. Simule los datos de $\epsilon_{t}$ y $X_{t}$ de tamaño T = 100. Realice gráﬁcos lineales para las dos series simuladas y comente los resultados.
+
+```{r}
+#Tamaño
+
+T <- 100
+
+## Ruido blanco= Normal con media 0 y varianza 1
+epsilon <- rnorm(T,0,1) 
+plot.ts(epsilon, col="royalblue2")
+
+#Caminata aleatoria
+X <- cumsum (epsilon)
+plot.ts(X, col="red4")
+xx<-1:100
+lo <- loess(X~xx)
+lines(predict(lo), col='red', lwd=2)
+abline(h=mean(X), col='blue')
+
+
+
+```
+
+
+Como se observa en el gráfico anterior, la variable $X$ no oscila de manera alrededor de la media (linea azul), ya que depende de t (tiempo)
 
 
 **9. Utilice la serie fpp2::goog de la bolsa de valores del Google entre 25 de febrero, 2013 a 13 de febrero, 2017.**
@@ -121,9 +265,9 @@ ggplotly(pgoogle)
 ```
 
 
-b. Una serie diferenciada Zt de la serie Yt es deﬁnida como
+b. Una serie diferenciada Z_{t} de la serie Y_{t} es deﬁnida como
 
-Zt = Yt −Yt−1.
+$Z_{t} = Y_{t} −Y_{t−1}$
 
 Zt mide el cambio que produce la observación en el tiempo t con respecto a la observación en el tiempo t − 1. Utilice la función diff(goog) para obtener los cambios diarios de la serie.
 
