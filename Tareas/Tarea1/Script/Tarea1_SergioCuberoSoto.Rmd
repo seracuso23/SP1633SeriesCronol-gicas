@@ -5,12 +5,13 @@ date: "17/8/2020"
 output:
   html_document: 
     df_print: kable
+    code_folding: hide
 editor_options: 
-  chunk_output_type: inline
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,warning = F,message = F)
 setwd("/cloud/project/Tareas/Tarea1")
 ```
 
@@ -51,36 +52,43 @@ nacits<-ts(naci$Nacimientos,frequency = 12,start=c(1990,1))
 ```
 
 
-**b.** Elabore un gráﬁco de la serie.
+**b.** Elabore un gráﬁco de la serie. y **c.** Comente sobre las características de la serie.
 
 ```{r}
 p<-autoplot(nacits) + 
-  labs(x ="t", y = "Nacimientos", title=" Evolución de los nacimientos (ene-90 a dic-1995)")+
+  labs(x ="t", y = "Nacimientos", title="Gráfico 1. Número de nacimientos,ene-90 a dic-1995, Costa Rica")+
   theme_classic()
 
 ggplotly(p)
+```
+
+El gráfico 1 muestra la serie de número de nacimientos en Costa Rica registrados desde enero 1990 a diciembre 1995. Se observa una variación estacional,donde, los febreros de cada año se presenta una caída en los nacimientos, mientras que para los meses de agosto a octubre hay un crecimiento, alcanzando el valor máximo en octubre de cada año. (ver gráfico 2)
+
+```{r}
+p3<-ggseasonplot(nacits, year.labels=FALSE, continuous=TRUE)+
+  theme_bw()+
+  ggtitle("Gráfico 2. Variación estacional del número de nacimientos,ene-90 a dic-1995, Costa Rica")
+
+ggplotly(p3)
+```
+
+Por último, se descomponen la serie por los tipos de variaciones (tendencia-ciclo, estacional y irregular), tal y como se muestra en el gráfico 3. Se observa que la serie desde 1990 a junio 1993 presenta una tendencia decreciente y a partir de este mismo punto la serie tiende a crecer hasta finales 1994.
+
+```{r}
+
 
 decomposeNacitsAditi <- decompose(nacits,"additive")
 
 p2<-autoplot(decomposeNacitsAditi)+
   theme_bw()+
-  ggtitle("Descomposición Aditiva")
+  ggtitle("Gráfico 3. Descomposición de la serie número de nacimientos,ene-90 a dic-1995, Costa Rica")
 
 ggplotly(p2)
-
-
-p3<-ggseasonplot(nacits, year.labels=FALSE, continuous=TRUE)+
-  theme_bw()
-
-ggplotly(p3)
-
-ggseasonplot(nacits, year.labels=FALSE, continuous=TRUE,polar = T)+
-  theme_bw()
 
 ```
 
 
-**c.** Comente sobre las características de la serie.
+
 
 
 **4. Considere el proceso estocástico $Z_{t}=a_{t}$ con $t = ±1, ±2$, ... y**
@@ -135,14 +143,55 @@ d. ¿Zt es débilmente estacionario?
 
 *Se concluye que $Z_{t}$ es debilmente estacionario ya que* **la media es constante** y $\rho \left ( t,s \right )$ **no depende de t**
 
-**6.Si $\left \{X_{t}, t \in T  \right \}$ y $\left \{Y_{t}, t \in  T \right \}$son estacionarios y además independientes, deﬁna $Z_{t} = a \cdot X_{t} + b \cdot Y_{t}$ para todo t. ¿$\left \{Z_{t}, t \in  T\right \}$$ será estacionario?**
+**6.Si $\left \{X_{t}, t \in T  \right \}$ y $\left \{Y_{t}, t \in  T \right \}$son estacionarios y además independientes, deﬁna $Z_{t} = a \cdot X_{t} + b \cdot Y_{t}$ para todo t. ¿$\left \{Z_{t}, t \in  T\right \}$ será estacionario?**
+
+
+Para verificar que $Z_{t}$ es estacionario se deben cumplir dos condiciones que la media sea constante, en otras palabras no dependa del tiempo; y que su covarianza depende únicamente de la diferencia $|t-s|=|h|$
+
+*Mostrar que la media es constante:*
+
+$$E(Z_{t})=E(a \cdot X_{t} + b \cdot Y_{t})=a \cdot E(X_{t}) + b \cdot E(Y_{t})=$$
+$$a \cdot \mu_{X}+b \cdot \mu_{Y}$$
+
+Por lo tanto, la media es constante pues no depende de t.
+
+*Mostrar que la covarianza depende únicamente de la diferencia $|t-s|=|h|$:*
+
+$$Cov(Z_{t},Z_{s})=Cov[(a \cdot X_{t} + b \cdot Y_{t}),(a \cdot X_{s} + b \cdot Y_{s})]$$
+
++ Para el caso $s=t$
+
+$$Cov[(a \cdot X_{t} + b \cdot Y_{t}),(a \cdot X_{t} + b \cdot Y_{t})]=Var(a \cdot X_{t} + b \cdot Y_{t})$$
+$$a^{2} \cdot Var(X_{t}) + b^{2} \cdot Var(Y_{t})=a^{2} \cdot \sigma_{X}^2 + b^{2} \cdot \sigma_{Y}^2 $$
+
+
++ Para le caso $s \neq t$
+
+$$Cov[(a \cdot X_{t} + b \cdot Y_{t}),(a \cdot X_{s} + b \cdot Y_{s})]=$$
+Las covarianzas $Cov(X,Y)$son  cero ya que las X_{t} y las Y_{t} son independientes, adicionalmente al ser X y Y estacionarios se sabe que $Cov( X_{t}\cdot X_{s})=\gamma_{x}$ y $Cov( Y_{t}\cdot Y_{s})=\gamma_{Y}$, pot lo tanto: 
+
+$$ = Cov( X_{t}\cdot X_{s})+
+b^2 \cdot Cov( Y_{t}\cdot Y_{s})=
+a^2 \cdot \gamma_{x}(h) + b^2 \cdot \gamma_{y}(h) $$
+
+
+
+Por lo tanto,
+
+$$ \gamma \left ( t,s \right )=\left\{\begin{matrix}
+a^{2} \cdot \sigma_{X}^2 + b^{2} \cdot \sigma_{Y}^2  & s= t\\ 
+a^2 \cdot \gamma_{x} + b^2 \cdot \gamma_{y}& s \neq t
+\end{matrix}\right.$$
+
+
+La covarianza depende únicamente de la diferencia $|t-s|=|h|$
+
+**Como se observa anteriormente, se puede concluir que $Z_{t}$ es estacionario pues cumple las condiciones que la media sea constante, en otras palabras no dependa del tiempo; y que su covarianza depende únicamente de la diferencia $|t-s|=|h|$**
 
 
 **7. Considere una secuencia aleatorias $\left \{\epsilon_{t}, t \geq 1 \right \}$ tal que $\epsilon_{t}$ es independiente e idénticamente distribuida  con media $\mu_{\epsilon}$ y variancia $\sigma_{\epsilon}^{2}$ . Deﬁna el paseo aleatorio $X_{t}$ como**
 
 $$X_{t}=\epsilon_{1}+\epsilon_{2}+...+\epsilon_{t}$$
-
-
 
 a. Muestre que $E(X_{t})=t \cdot \mu_{\epsilon}$ y $Var(X_{t}) = t \cdot\sigma_{\epsilon}^{2}$
 
@@ -166,6 +215,7 @@ $$\gamma_{x}(t,s)=cov(x_{t},x_{s})$$
 Para el caso donde $s=t$:
 
 $$\gamma_{x}(t,t)=cov(x_{t},x_{t})=Var(x_{t},x_{t})=t \cdot \sigma_{\epsilon}^{2}$$
+
 **Para el caso donde $s=t+h$:**
 
 $$\gamma_{x}(t,t+h)=cov(x_{t},x_{t+h})$$
@@ -213,7 +263,7 @@ $$
 
 $$ \gamma \left ( t,s \right )=\left\{\begin{matrix}
 t \cdot \sigma_{\epsilon}^{2} & s\geq t\\ 
-(t-h) \cdot \sigma_{\epsilon}^{2} & s < t
+(s) \cdot \sigma_{\epsilon}^{2} & s < t
 \end{matrix}\right.$$
 
 $$\gamma \left ( t,s \right )=\sigma_{\epsilon}^{2}\cdot min(t,s)$$
@@ -263,6 +313,12 @@ pgoogle<-autoplot(accgoogle)+
 
 ggplotly(pgoogle)
 ```
+Se observa que en los primeros 260 periodos muestra una tendencia crecientes, sin embargo, en el periodo 160 se presenta un positivo en el nivel de la serie.
+
+Por otro lado, a partir del periodo 260 a 599, la precio de las acciones de google se mantiene constante oscilando alrededor 550 dolares americanos.
+
+Por último, del periodo 600 hacia delante se presenta una tendencia creciente del precio de las acciones de google.
+
 
 
 b. Una serie diferenciada Z_{t} de la serie Y_{t} es deﬁnida como
@@ -279,16 +335,22 @@ zt<-diff(accgoogle)
 
 c. Haga un gráﬁco lineal de la serie obtenida en b. ¿La serie parece a un ruido blanco?
 
+La serie si parece ruido blanco, pues varía alrededor de la media que es 0 y mantiene su variación a lo largo del tiempo
+
 ```{r}
 pzt<-autoplot(zt)+
   theme_bw()
 
 ggplotly(pzt)
+
+hist(zt)
+
 ```
 
 
 d. Utilice la función ggAcf() para calcular la función de autocorrelación y compárela con la función de autocorrelación de los ruidos blancos.
 
++ Serie $Z_{t}$
 
 ```{r}
 
@@ -297,4 +359,21 @@ pzt2<- ggAcf(zt)+
 
 ggplotly(pzt2)
 ```
+
++ Serie ruido blanco $w_{t} \sim wn(0,1)$
+
+```{r}
+wt<-ts(rnorm(999))
+
+pwt<-autoplot(wt)+
+  theme_bw()
+
+ggplotly(pwt)
+
+pwt2<- ggAcf(wt)+
+  theme_bw()
+
+ggplotly(pwt2)
+```
+
 

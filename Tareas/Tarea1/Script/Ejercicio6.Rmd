@@ -1,0 +1,53 @@
+---
+title: "Ejercicio 6"
+author: "Sergio Cubero Soto"
+date: "17/8/2020"
+output:
+  html_document: 
+    df_print: kable
+editor_options: 
+  chunk_output_type: inline
+---
+
+# 6.Si $\left \{X_{t}, t \in T  \right \}$ y $\left \{Y_{t}, t \in  T \right \}$son estacionarios y además independientes, deﬁna $Z_{t} = a \cdot X_{t} + b \cdot Y_{t}$ para todo t. ¿$\left \{Z_{t}, t \in  T\right \}$ será estacionario?
+
+
+Para verificar que $Z_{t}$ es estacionario se deben cumplir dos condiciones que la media sea constante, en otras palabras no dependa del tiempo; y que su covarianza no dependa de t, o sea, que sea constate para tod $T$
+
+*Mostrar que la media es constante:*
+
+$$E(Z_{t})=E(a \cdot X_{t} + b \cdot Y_{t})=a \cdot E(X_{t}) + b \cdot E(Y_{t})=$$
+$$a \cdot \mu_{X}+b \cdot \mu_{Y}$$
+
+Por lo tanto, la media es constante pues no depende de t.
+
+*Mostrar que la covarianza es constante:*
+
+$$Cov(Z_{t},Z_{s})=Cov[(a \cdot X_{t} + b \cdot Y_{t}),(a \cdot X_{s} + b \cdot Y_{s})]$$
+
++ Para el caso $s=t$
+
+$$Cov[(a \cdot X_{t} + b \cdot Y_{t}),(a \cdot X_{t} + b \cdot Y_{t})]=Var(a \cdot X_{t} + b \cdot Y_{t})$$
+$$a^{2} \cdot Var(X_{t}) + b^{2} \cdot Var(Y_{t})=a^{2} \cdot \sigma_{X}^2 + b^{2} \cdot \sigma_{Y}^2 $$
++ Para le caso $s \neq t$
+
+$$Cov[(a \cdot X_{t} + b \cdot Y_{t}),(a \cdot X_{s} + b \cdot Y_{s})]=$$
+$$Cov(a^2 \cdot X_{t}\cdot X_{s})+
+Cov(a \cdot b\cdot X_{t}\cdot Y_{s})+
+Cov(b \cdot a\cdot Y_{t}\cdot X_{s})+
+Cov(b^2 \cdot Y_{t}\cdot Y_{s})=$$
+
+Dado que $X$ y $Y$ son indepedientes las covarianzas entre pares de variables son 0
+
+$$Cov(X_{t},X_{s})=0$$
+Por lo tanto,
+
+$$ \gamma \left ( t,s \right )=\left\{\begin{matrix}
+a^{2} \cdot \sigma_{X}^2 + b^{2} \cdot \sigma_{Y}^2  & s= t\\ 
+0& s \neq t
+\end{matrix}\right.$$
+
+
+La covarianza es constante y no depende de t
+
+**Como se observa anteriormente, se puede concluir que $Z_{t}$ es estacionario pues cumple las condiciones que la media sea constante, en otras palabras no dependa del tiempo; y que su covarianza no dependa de t, o sea, que sea constate para todo $T$**
