@@ -1,0 +1,74 @@
+---
+title: 'Series de Tiempo - Trabajo final: Avance 1'
+author: "Sergio Cubero Soto"
+date: "30/8/2020"
+output: 
+  pdf_document: 
+    number_sections: yes
+    citation_package: natbib
+---
+
+# Introducción
+
+El objetivo de presente documento es describir de manera general la serie de tiempo elegida para desarrollar el trabajo final del curso *SP1633: Series temporales*. 
+
+El documento describe la fuente donde se obtuvo la serie de de tiempo, así como, su descripción, los periodos disponibles y el gráfico de la misma
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,message = TRUE, warning = TRUE)
+```
+
+```{r package, include=FALSE}
+library(ggfortify)
+library(forecast)
+library(fpp2)
+library(data.table)
+library(TTR)
+library(xts)
+library(readxl)
+```
+
+# Descripción de la serie de tiempo
+
++ **Nombre de la serie:** Llegadas internacionales a Costa Rica vía aerea
+
++ **Fuente** [Instituto Costarricense de Turismo](https://www.ict.go.cr/es/documentos-institucionales/estad%C3%ADsticas/informes-estad%C3%ADsticos/anuarios/2005-2015/1583-2019-1/file.html) . Vinculo del reporte de datos
+
++ **Metodología de recoleccíon de datos:** De acuerdo al informe anual del Instituto Costarricense de Turismo (ICT,2019) los datos se obtienen: 
+
+>> *En los primeros diez días del mes, la Dirección General de Migración y Extranjería envía un archivo a la Unidad de Administración de la Información con las llegadas internacionales acumuladas durante el mes anterior y, de forma automatizada, se carga en un sistema que consolida la información.*
+
+>> *Se realiza el escaneo del pasaporte de la persona que realiza el movimiento migratorio. En los puestos Migratorios aereos: Aeropuerto Internacional Juan Santamaría, Aeropuerto Internacional Daniel Oduber Quiros, Aeropuerto Internacional Tobías Bolaños y Aeropuerto Internacional de Limón .*
+
++ **Frecuencia:** mensual
+
++ **Periodos disponibles:** Enero 2009 a diciembre 2019
+
+# Gráfico de la serie de tiempo
+
+```{r}
+
+TS <- read_excel("/cloud/project/Trabajo Final/Data/TS_Entrega1.xlsx")
+
+Llegadas<- ts(TS$LlegadasAereas, start=c(2016,1), end=c(2019,12), frequency=12)
+
+autoplot(Llegadas) + 
+  labs(x ="Mes-Año", y = "Número de llegadas", title=" Instituto Costarricense de Turismo: Llegadas Internacionales a \n Costa Rica vía aerea,enero-2009 a diciembre-2019") +
+  theme_classic()
+
+decomposeAP <- decompose(Llegadas,"multiplicative")
+autoplot(decomposeAP)+ 
+  labs(x ="Mes-Año", title=" Instituto Costarricense de Turismo: Llegadas Internacionales a \n Costa Rica vía aerea,enero-2009 a diciembre-2019") +
+  theme_classic()
+
+ggseasonplot(Llegadas, year.labels=T, continuous=TRUE)+ 
+  labs(x ="Mes", y = "Número de llegadas", title=" Instituto Costarricense de Turismo: Llegadas Internacionales a \n Costa Rica vía aerea,enero-2009 a diciembre-2019") +
+  theme_classic()
+```
+De acuerdo a los gráficos, se observa que la serie presenta componente estacional, ya que en los meses de setiembre y octubre hay poca llegadas a los aeropuertos de Costa Rica, siendo este periodo coincide con la temporada baja en el sector turismo. En contraste los meses de enero, febrero, marzo y diciembre de cada año donde se presenta mayor llegadas de vuelos siendo esta la temporada alta para el sector.
+
+Adicionalmente, se observa una tendencia creciente en la llegadas de pasajeros a los aeropuertos del país.
+
+# Bibliografía
+
+Instituto Costarricense de Turismo. (2019). *Anuario Estadístico de Turismo 2019*. https://www.ict.go.cr/es/documentos-institucionales/estad%C3%ADsticas/informes-estad%C3%ADsticos/semestral/2019/1582-2019-informe-ii-semestre/file.html

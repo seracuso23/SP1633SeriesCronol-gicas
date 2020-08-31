@@ -1,0 +1,40 @@
+---
+title: 'Series de Tiempo - Trabajo final: Avance 1'
+author: "Sergio Cubero Soto"
+date: "30/8/2020"
+output: 
+  pdf_document: 
+    number_sections: yes
+---
+
+# Introducción
+
+El objetivo de presente documento es describir de manera general la serie de tiempo elegida para desarrollar el trabajo final del curso *SP1633: Series temporales*. 
+
+El documento describe la fuente donde se obtuvo la serie de de tiempo, así como, su descripción, los periodos disponibles y el gráfico de la misma
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,message = TRUE, warning = TRUE)
+```
+
+```{r package, include=FALSE}
+library(ggfortify)
+library(forecast)
+library(fpp2)
+library(data.table)
+library(TTR)
+library(xts)
+```
+
+# Descripción de la serie de tiempo
+
++ **Nombre de la serie**
+
++ **Definición**
+
++ **Fuente**
+
++ **Periodos disponibles**
+
+# Gráfico de la serie de tiempo
+
